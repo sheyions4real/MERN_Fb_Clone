@@ -1,0 +1,130 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  /* background: var(--bg-secondary); */
+}
+html {
+  overflow-y: scroll;
+}
+
+html::-webkit-scrollbar {
+  width: 7px;
+  background: var(--bg-secondary);
+  border: none;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--dark-color-secondary);
+  border-radius: 5px;
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+:root {
+  --bg-primary: #fff;
+  --bg-secondary: #f0f2f5;
+  --bg-third: #e4e6eb;
+  --bg-forth: #f0f2f5;
+  --color-primary: #050505;
+  --color-secondary: #65676b;
+  --divider: #ced0d4;
+  --dark-bg-primary: #18191a;
+  --dark-bg-secondary: #242526;
+  --dark-bg-third: #3a3b3c;
+  --dark-color-primary: #242526;
+  --dark-color-secondary: #b0b3b8;
+  --blue-color: #1876f2;
+  --green-color: #42b72a;
+  --light-blue-color: #e7f3ff;
+  --border-color: #ccced2;
+  --shadow-1: rgba(0, 0, 0, 0.2);
+  --shadow-2: rgba(0, 0, 0, 0.1);
+  --shadow-3: rgba(0, 0, 0, 0.3);
+  --shadow-4: rgba(0, 0, 0, 0.5);
+  --shadow-5: rgba(0, 0, 0, 0.7);
+  --shadow-inset: rgba(255, 255, 255, 0.5);
+
+  --blur-bg-overlay: rgba(255, 255, 255, 0.768);
+  --error_color-primary: #b94a48;
+}
+
+/****** Buttons *********/
+.blue_btn {
+  background: var(--blue-color);
+  border: none;
+  outline: none;
+  padding: 0.5px 12px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.gray_btn {
+  background: var(--bg-secondary);
+  border: none;
+  outline: none;
+  padding: 0.5px 12px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/******* Buttons ********/
+.blur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--blur-bg-overlay);
+  z-index: 999;
+}
+
+/****** Hover ********/
+.hover1:hover {
+  background: var(--bg-secondary);
+}
+
+.hover2:hover {
+  background: var(--bg-third);
+}
+
+.hover3:hover {
+  background-color: var(--bg-forth);
+}
+.card {
+  height: 500px;
+  width: 500px;
+  background: red;
+}
+
+/*********** Custom Scroll bar ************/
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #aeafa1;
+  border-radius: 5px;
+}
+/*********** End Custom Scroll bar ************/
