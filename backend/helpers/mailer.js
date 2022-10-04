@@ -166,16 +166,16 @@ exports.sendVerificationEmail = (email, name, code) => {
         expires: 1484314697598,
       },
     };
-
-    //Step 3: Sending email
-    transporter2
-      .sendMail(mailOptions)
-      .then((res) => {
-        console.log("Email Sent" + res);
-      })
-      .catch((error) => {
-        console.log("Email not Sent" + error.message);
-      });
+    // disable sending email due to change in gmail credentials for the momemt
+    // //Step 3: Sending email
+    // transporter2
+    //   .sendMail(mailOptions)
+    //   .then((res) => {
+    //     console.log("Email Sent" + res);
+    //   })
+    //   .catch((error) => {
+    //     console.log("Email not Sent" + error.message);
+    //   });
 
     // transporter
     //   .sendMail(mailOptions)

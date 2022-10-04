@@ -5,10 +5,12 @@
 }
 body {
   font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-  /* background: var(--bg-secondary); */
+  /* height: 100%; */
+  background: var(--bg-secondary);
 }
 html {
   overflow-y: scroll;
+  width: 100vw;
 }
 
 html::-webkit-scrollbar {
@@ -42,7 +44,7 @@ a {
   --dark-color-secondary: #b0b3b8;
   --blue-color: #1876f2;
   --green-color: #42b72a;
-  --light-blue-color: #e7f3ff;
+  --light-blue-color: #c5d6e9;
   --border-color: #ccced2;
   --shadow-1: rgba(0, 0, 0, 0.2);
   --shadow-2: rgba(0, 0, 0, 0.1);
@@ -72,7 +74,22 @@ a {
   gap: 6px;
   cursor: pointer;
 }
-
+.light_blue_btn {
+  border: none;
+  outline: none;
+  padding: 0.5px 7px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  background: var(--light-blue-color);
+}
 .gray_btn {
   background: var(--bg-secondary);
   border: none;
@@ -90,6 +107,10 @@ a {
   cursor: pointer;
 }
 
+.blue_btn,
+.gray_btn {
+  transform: translateY(-1px);
+}
 /******* Buttons ********/
 .blur {
   position: fixed;
@@ -128,3 +149,24 @@ a {
   border-radius: 5px;
 }
 /*********** End Custom Scroll bar ************/
+/*---Circles------*/
+.small_circle {
+  position: relative;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 11px;
+  background: var(--bg-third);
+  cursor: pointer;
+}
+/*---Circles------*/
+
+/******* filters ********/
+.filter_blue {
+  filter: invert(39%) sepia(57%) saturate(200%) saturate(200%) saturate(200%)
+    saturate(200%) saturate(200%) saturate(147.75%) hue-rotate(202deg)
+    brightness(97%) contrast(96%);
+}

@@ -18,7 +18,7 @@ export default function SendVerification({ user }) {
           },
         }
       );
-      console.log(data.message);
+      //console.log(data.message);
       setSuccess(data.message);
     } catch (error) {
       console.log(error.response.data.message);

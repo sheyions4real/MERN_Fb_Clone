@@ -3,6 +3,7 @@ const {
   validateLength,
   validateUsername,
 } = require("../helpers/validation");
+const Post = require("../models/Post");
 const User = require("../models/User");
 const Code = require("../models/Code");
 const bcrypt = require("bcrypt");
@@ -67,7 +68,7 @@ exports.register = async (req, res) => {
     const encryptedPassword = await bcrypt.hash(password, 12);
     // console.log(encryptedPassword);
 
-    let tempUsername = first_name + last_name;
+    let tempUsername = first_name.toLowerCase() + last_name.toLowerCase();
     let newUsername = await validateUsername(tempUsername);
 
     //console.log(newUsername);
@@ -102,7 +103,7 @@ exports.register = async (req, res) => {
 
     res.send({
       id: user._id,
-      username: user.username,
+      username: user.username.toLowerCase(),
       picture: user.picture,
       first_name: user.first_name,
       last_name: user.last_name,
@@ -294,6 +295,22 @@ exports.changePassword = async (req, res) => {
     return res
       .status(200)
       .json({ message: "User password updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const profile = await User.findOne({ username }).select("-password"); // return all the user details except the password
+    if (!profile) {
+      return res.json({ ok: false });
+    }
+
+    // get the post for the user profile returned
+    const posts = await Post.find({ user: profile._id }).populate("user");
+    res.json({ ...profile.toObject(), posts });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

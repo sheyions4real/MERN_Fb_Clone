@@ -1,5 +1,5 @@
 // import "./style.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import CreatePost from "../../components/createPost";
 import Header from "../../components/header";
@@ -7,11 +7,16 @@ import LeftHome from "../../components/home/left";
 import RightHome from "../../components/home/right";
 import SendVerification from "../../components/home/sendVerification/sendVerification";
 import Stories from "../../components/home/stories";
+import Post from "../../components/post";
 import useClickOutside from "../../helpers/clickOutside";
 import "./style.css";
-export default function Home() {
-  const [visible, setVisible] = useState(false);
-  const user = useSelector((user) => ({ ...user }));
+export default function Home({ setVisible, posts }) {
+  const { user } = useSelector((state) => ({ ...state }));
+  const middle = useRef(null);
+  const [height, setHeight] = useState();
+  useEffect(() => {
+    setHeight(middle.current.clientHeight);
+  }, []);
   //const { user2 } = useSelector((state) => ({ ...state }));
   // el is define create a reference element to any element passed to it using ref={} in this case reference the carc div
   const el = useRef(null);
@@ -20,15 +25,21 @@ export default function Home() {
   });
 
   return (
-    <div className="home">
-      <Header />
-      <LeftHome user={user.user} />
-      <div className="home_middle">
+    <div className="home" style={{ height: `${height - 150}px` }}>
+      <Header page="home" />
+      <LeftHome user={user} />
+      <div className="home_middle" ref={middle}>
         <Stories />
-        {user.user.verified === false && <SendVerification user={user.user} />}
-        <CreatePost user={user.user} />
+        {user.verified === false && <SendVerification user={user} />}
+        <CreatePost user={user} setVisible={setVisible} />
+        <div className="posts">
+          {posts.length &&
+            posts.map((post) => (
+              <Post key={post._id} post={post} user={user} />
+            ))}
+        </div>
       </div>
-      <RightHome user={user.user} />
+      <RightHome user={user} />
     </div>
   );
 }

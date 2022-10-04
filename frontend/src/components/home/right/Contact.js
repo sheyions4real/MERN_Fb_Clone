@@ -1,5 +1,5 @@
 export default function Contact({ user }) {
-  console.log(user);
+  // console.log(user);
   return (
     <div className="contact">
       <div className="contact_img">

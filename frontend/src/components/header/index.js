@@ -14,13 +14,14 @@ import {
   Notifications,
   Messenger,
   ArrowDown,
+  Home,
 } from "../../svg";
 import SearchMenu from "./SearchMenu";
 import AllMenu from "./AllMenu";
 import UserMenu from "./userMenu";
 import useClickOutside from "../../helpers/clickOutside";
 
-export default function Header() {
+export default function Header({ page }) {
   const color = "#65676b";
   const { user } = useSelector((user) => ({ ...user })); // return the user object from the redux store
   //console.log(user);
@@ -68,8 +69,15 @@ export default function Header() {
       )}
 
       <div className="header_middle">
-        <Link to="/" className="middle_icon hover1 active">
-          <HomeActive color={color} />
+        <Link
+          to="/"
+          className={`middle_icon ${page === "home" ? "active" : "hover1"}  `}
+        >
+          {page === "home" ? (
+            <HomeActive color={color} />
+          ) : (
+            <Home color={color} />
+          )}
         </Link>
         <Link to="/" className="middle_icon hover1">
           <Friends color={color} />
@@ -86,7 +94,12 @@ export default function Header() {
         </Link>
       </div>
       <div className="header_right">
-        <Link to="/profile" className="profile_link hover1">
+        <Link
+          to="/profile"
+          className={`profile_link hover1 ${
+            page === "profile" ? "active_link" : ""
+          }`}
+        >
           <img src={user?.picture} alt="" />
           <span>{user?.first_name}</span>
         </Link>

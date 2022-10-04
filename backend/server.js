@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const fileUpload = require("express-fileUpload");
 //const useRoutes = require("./routes/user");               // we will dynamically configure the routes in the routes folder usig the file system
 const { readdirSync } = require("fs"); // to read all files in a folder
 const dotenv = require("dotenv");
@@ -43,6 +44,12 @@ function corsOptions(req, res) {
 //app.use(cors(corsOptions));                       // this will allow only the origin in the allowedOrigin list
 app.use(cors()); // this will allow all origin to connect
 
+// use express-fileupload to manage file upload
+app.use(
+  fileUpload({
+    useTempFiles: true,
+  })
+);
 // defining routes but this can be done dynamically to use routes for the multiple route files in the routes folder
 //app.use("/api", useRoutes);
 
