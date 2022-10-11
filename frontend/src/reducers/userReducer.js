@@ -10,6 +10,8 @@ export function userReducer(
   switch (action.type) {
     case "LOGIN":
       return action.payload;
+    case "UPDATEPROFILEPICTURE":
+      return { ...state, picture: action.payload };
     case "VERIFY":
       return { ...state, verified: action.payload };
     case "LOGOUT":

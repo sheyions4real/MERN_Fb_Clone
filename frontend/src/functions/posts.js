@@ -19,7 +19,7 @@ export const sendPost = async (type, background, text, images, user, token) => {
     //console.log(data);
     return "ok";
   } catch (error) {
-    console.log(error.message);
+    //console.log(error.message);
     return error.response.data.message;
   }
 };

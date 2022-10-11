@@ -13,6 +13,11 @@ const { generateToken } = require("../helpers/tokens");
 const { sendVerificationEmail, sendResetCode } = require("../helpers/mailer");
 const { generateCode } = require("../helpers/generateCode");
 
+// test the API  Service
+exports.auth = (req, res) => {
+  res.status(200).json({ message: "welcome to auth" });
+};
+
 // user registration repository function
 exports.register = async (req, res) => {
   try {
@@ -195,10 +200,6 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.auth = (req, res) => {
-  res.status(200).json({ message: "welcome to auth" });
-};
-
 exports.sendVerification = async (req, res) => {
   try {
     const id = req.user.id;
@@ -309,8 +310,38 @@ exports.getProfile = async (req, res) => {
     }
 
     // get the post for the user profile returned
-    const posts = await Post.find({ user: profile._id }).populate("user");
+    const posts = await Post.find({ user: profile._id })
+      .populate("user")
+      .sort({ createdAt: -1 });
     res.json({ ...profile.toObject(), posts });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateProfilePicture = async (req, res) => {
+  try {
+    //console.log(" updateProfilePicture I was called");
+    // get the user.id from the req added by the authUser middleware
+    const { url } = req.body;
+    const response = await User.findByIdAndUpdate(req.user.id, {
+      picture: url,
+    });
+    res.json(url);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateCoverPicture = async (req, res) => {
+  try {
+    //console.log(" updateCoverPicture I was called");
+    // get the user.id from the req added by the authUser middleware
+    const { url } = req.body;
+    const response = await User.findByIdAndUpdate(req.user.id, {
+      cover: url,
+    });
+    res.json(url);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

@@ -16,6 +16,7 @@ import ProfilePictureInfos from "./ProfilePictureInfos";
 import "./style.css";
 
 export default function Profile({ setVisible }) {
+  const [photos, setPhotos] = useState();
   const navigate = useNavigate();
   // get the parameter passed to the route
   const { username } = useParams();
@@ -47,6 +48,10 @@ export default function Profile({ setVisible }) {
   var visitor =
     userName.toLowerCase() === user.username.toLowerCase() ? false : true;
   //console.log(visitor);
+
+  const path = `${userName}/*`;
+  const max = 30;
+  const sort = "desc";
   const getProfile = async () => {
     try {
       // use dispatch to set the loading to true and the error to ""
@@ -60,6 +65,19 @@ export default function Profile({ setVisible }) {
       if (data.ok === false) {
         navigate("/profile");
       } else {
+        try {
+          // get the user photos
+          const images = await axios.post(
+            `${process.env.REACT_APP_BACKEND_URL}/listImages`,
+            { path, sort, max },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          );
+          console.log("profile images");
+          console.log(images);
+          setPhotos(images.data);
+        } catch (error) {
+          console.log(error);
+        }
         // use dispatch to update the profile, loading and the error state
         dispatch({
           type: "PROFILE_SUCCESS",
@@ -81,8 +99,16 @@ export default function Profile({ setVisible }) {
       <Header page="profile" />
       <div className="profile_top">
         <div className="profile_container">
-          <Cover cover={profile.cover} visitor={visitor} />
-          <ProfilePictureInfos profile={profile} visitor={visitor} />
+          <Cover
+            cover={profile.cover}
+            visitor={visitor}
+            photos={photos?.resources}
+          />
+          <ProfilePictureInfos
+            profile={profile}
+            visitor={visitor}
+            photos={photos?.resources}
+          />
           <ProfileMenu />
         </div>
       </div>{" "}
@@ -92,7 +118,11 @@ export default function Profile({ setVisible }) {
             <PeopleYouMayKnow />
             <div className="profile_grid">
               <div className="profile_left">
-                <Photos username={userName} token={user.token} />
+                <Photos
+                  username={userName}
+                  token={user.token}
+                  photos={photos}
+                />
                 <Friends friends={profile?.friends} />
                 <div className="relative_fb_copyright">
                   <Link to="/">Privacy</Link>

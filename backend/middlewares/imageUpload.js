@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports = async function (req, res, next) {
   try {
-    console.log(Object.values(req.files).flat());
+    //console.log("validating image");
     // Object.values(req.files).flat(); // convert the req.files to an array
     if (!req.files || Object.values(req.files).flat().length === 0) {
       return res.status(400).json({ message: "No files selected" });
@@ -10,6 +10,7 @@ module.exports = async function (req, res, next) {
     let files = Object.values(req.files).flat();
     files.forEach((file) => {
       console.log(file.mimetype);
+
       // allow only images
       if (
         !(

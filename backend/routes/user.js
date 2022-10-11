@@ -11,6 +11,8 @@ const {
   validateResetCode,
   changePassword,
   getProfile,
+  updateProfilePicture,
+  updateCoverPicture,
 } = require("../controllers/users");
 
 const router = express.Router();
@@ -25,4 +27,6 @@ router.post("/sendResetCodeVerification", sendResetCodeVerification);
 router.post("/validateResetCode", validateResetCode);
 router.post("/changePassword", changePassword);
 router.get("/getProfile/:username", authUser, getProfile);
+router.put("/updateProfilePicture", authUser, updateProfilePicture);
+router.put("/updateCoverPicture", authUser, updateCoverPicture);
 module.exports = router;

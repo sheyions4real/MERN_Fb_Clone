@@ -44,7 +44,7 @@ a {
   --dark-color-secondary: #b0b3b8;
   --blue-color: #1876f2;
   --green-color: #42b72a;
-  --light-blue-color: #c5d6e9;
+  --light-blue-color: #9ec2f162;
   --border-color: #ccced2;
   --shadow-1: rgba(0, 0, 0, 0.2);
   --shadow-2: rgba(0, 0, 0, 0.1);
@@ -119,7 +119,7 @@ a {
   right: 0;
   bottom: 0;
   background: var(--blur-bg-overlay);
-  z-index: 999;
+  z-index: 9999999999;
 }
 
 /****** Hover ********/

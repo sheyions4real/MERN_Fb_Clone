@@ -336,7 +336,11 @@ export default function CreatePostPopup({ user, setVisible }) {
           }}
           disabled={loading}
         >
-          {loading ? <PulseLoader color="#fff" size={5} /> : "Post"}
+          {loading ? (
+            <PulseLoader color="#fff" size={5} loading={loading} />
+          ) : (
+            "Post"
+          )}
         </button>
       </div>
     </div>

@@ -1,17 +1,34 @@
-export default function ProfilePictureInfos({ profile, visitor }) {
+import { useRef, useState } from "react";
+import ProfileUpdate from "../../components/ProfilePicture";
+
+export default function ProfilePictureInfos({ profile, visitor, photos }) {
+  const [showProfileUpdate, setShowProfileUpdate] = useState(false);
+  const pRef = useRef(null);
+  console.log(photos);
   return (
     <div className="profile_img_wrap">
+      {showProfileUpdate && (
+        <ProfileUpdate
+          setShowProfileUpdate={setShowProfileUpdate}
+          pRef={pRef}
+          photos={photos}
+        />
+      )}
       <div className="profile_w_left">
         <div className="profile_w_img">
           <div
             className="profile_w_bg"
+            ref={pRef}
             style={{
               backgroundSize: "cover",
               backgroundImage: `url(${profile?.picture})`,
             }}
           ></div>
           {!visitor && (
-            <div className="profile_circle hover1">
+            <div
+              className="profile_circle hover1"
+              onClick={() => setShowProfileUpdate(true)}
+            >
               <i className="camera_filled_icon"></i>
             </div>
           )}
