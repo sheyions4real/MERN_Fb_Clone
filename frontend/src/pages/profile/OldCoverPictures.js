@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { useSelector } from "react-redux";
+import useClickOutside from "../../helpers/clickOutside";
 
 export default function OldCoverPictures({
   photos,
@@ -6,9 +8,14 @@ export default function OldCoverPictures({
   setShowOldCover,
 }) {
   const { user } = useSelector((state) => ({ ...state }));
+  const ref = useRef(null);
+  // click outside
+  useClickOutside(ref, () => {
+    setShowOldCover(false);
+  });
   return (
     <div className="blur">
-      <div className="postBox selectCoverBox">
+      <div className="postBox selectCoverBox" ref={ref}>
         <div className="box_header">
           <div className="small_circle" onClick={() => setShowOldCover(false)}>
             <i className="exit_icon"></i>
