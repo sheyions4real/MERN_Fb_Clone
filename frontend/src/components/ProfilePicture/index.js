@@ -18,7 +18,7 @@ export default function ProfileUpdate({ setShowProfileUpdate, pRef, photos }) {
   console.log(photos);
   // helper functions
   useClickOutside(popup, () => {
-    setShowProfileUpdate(false);
+    //setShowProfileUpdate(false);
   });
 
   // event handler function

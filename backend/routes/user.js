@@ -13,6 +13,14 @@ const {
   getProfile,
   updateProfilePicture,
   updateCoverPicture,
+  updateDetails,
+  addFriend,
+  cancelFriendRequest,
+  follow,
+  unFollow,
+  acceptRequest,
+  unFriend,
+  deleteRequest,
 } = require("../controllers/users");
 
 const router = express.Router();
@@ -29,4 +37,12 @@ router.post("/changePassword", changePassword);
 router.get("/getProfile/:username", authUser, getProfile);
 router.put("/updateProfilePicture", authUser, updateProfilePicture);
 router.put("/updateCoverPicture", authUser, updateCoverPicture);
+router.put("/updateDetails", authUser, updateDetails);
+router.put("/addFriend/:friendId", authUser, addFriend);
+router.put("/cancelFriendRequest/:friendId", authUser, cancelFriendRequest);
+router.put("/follow/:friendId", authUser, follow);
+router.put("/unfollow/:friendId", authUser, unFollow);
+router.put("/acceptRequest/:friendId", authUser, acceptRequest);
+router.put("/unFriend/:friendId", authUser, unFriend);
+router.put("/deleteRequest/:friendId", authUser, deleteRequest);
 module.exports = router;

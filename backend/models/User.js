@@ -67,22 +67,30 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    friends: {
-      type: Array,
-      default: [],
-    },
-    following: {
-      type: Array,
-      default: [],
-    },
-    followers: {
-      type: Array,
-      default: [],
-    },
-    requests: {
-      type: Array,
-      default: [],
-    },
+    friends: [
+      {
+        type: ObjectId,
+        ref: "user",
+      },
+    ],
+    following: [
+      {
+        type: ObjectId,
+        ref: "user",
+      },
+    ],
+    followers: [
+      {
+        type: ObjectId,
+        ref: "user",
+      },
+    ],
+    requests: [
+      {
+        type: ObjectId,
+        ref: "user",
+      },
+    ],
     search: [
       {
         user: {
@@ -113,7 +121,7 @@ const userSchema = mongoose.Schema(
       currentCity: {
         type: String,
       },
-      hometown: {
+      homeTown: {
         type: String,
       },
       relationship: {

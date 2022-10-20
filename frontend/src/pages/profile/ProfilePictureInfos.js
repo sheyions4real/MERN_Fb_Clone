@@ -1,10 +1,17 @@
 import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import ProfileUpdate from "../../components/ProfilePicture";
+import Friendship from "./Friendship";
 
-export default function ProfilePictureInfos({ profile, visitor, photos }) {
+export default function ProfilePictureInfos({
+  profile,
+  visitor,
+  photos,
+  othername,
+}) {
   const [showProfileUpdate, setShowProfileUpdate] = useState(false);
   const pRef = useRef(null);
-  console.log(photos);
+  // console.log(photos);
   return (
     <div className="profile_img_wrap">
       {showProfileUpdate && (
@@ -35,15 +42,39 @@ export default function ProfilePictureInfos({ profile, visitor, photos }) {
         </div>
         <div className="profile_w_col">
           <div className="profile_name">
-            {profile?.first_name} {profile?.last_name}{" "}
-            <div className="othername">(Othername)</div>
+            {profile?.first_name} {profile?.last_name}
+            <div className="othername">{othername && `(${othername})`}</div>
           </div>
-          <div className="profile_friend_count"></div>
-          <div className="profile_friend_imgs"></div>
+          <div className="profile_friend_count">
+            {profile.friends && (
+              <div className="profile_card_count">
+                {profile.friends?.length === 0
+                  ? ""
+                  : profile.friends?.length === 1
+                  ? "1 Friend"
+                  : `${profile.friends?.length} Friends`}
+              </div>
+            )}
+          </div>
+          <div className="profile_friend_imgs">
+            {profile?.friends &&
+              profile.friends.slice(0, 6).map((friend, index) => (
+                <Link to={`/profile/${friend.username}`} key={index}>
+                  <img
+                    src={friend.picture}
+                    alt=""
+                    style={{
+                      transform: `translateX(${-index * 5}px)`,
+                      zIndex: `${index}`,
+                    }}
+                  />
+                </Link>
+              ))}
+          </div>
         </div>
       </div>
       {visitor ? (
-        ""
+        <Friendship friendshipp={profile?.friendship} profileId={profile._id} />
       ) : (
         <div className="profile_w_right">
           <div className="blue_btn">

@@ -1,6 +1,6 @@
 .pictureBox {
   width: 700px !important;
-  height: 62vh;
+  height: 700px;
 }
 
 .update_picture_wrap {
@@ -172,7 +172,7 @@
 .old_pictures_wrap {
   padding: 15px;
   overflow-y: auto;
-  height: 450px;
+  height: 550px;
 }
 
 .old_pictures_wrap h4 {
@@ -201,4 +201,36 @@
 .old_pictures:first-of-type {
   margin-bottom: 10px;
   border-bottom: 1px solid var(--bg-third);
+}
+
+@media (max-width: 720px) {
+  .postBox.pictureBox {
+    width: 94% !important;
+    margin: 0 auto;
+    left: 47%;
+  }
+}
+
+@media (max-width: 590px) {
+  .postBox .old_pictures {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    align-items: center;
+  }
+  .postBox .old_pictures img {
+    width: 100% !important;
+    height: 110px !important;
+  }
+}
+@media (max-width: 430px) {
+  .postBox .old_pictures {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    align-items: center;
+  }
+
+  .box_header span {
+    font-size: 18px !important;
+    transform: translateX(-2rem);
+  }
 }

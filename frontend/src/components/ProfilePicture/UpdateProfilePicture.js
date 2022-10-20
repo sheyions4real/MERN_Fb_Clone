@@ -61,8 +61,9 @@ export default function UpdateProfilePicture({
     [croppedAreaPixels]
   );
 
-  const updateProfielPicture = async () => {
+  const updateProfilePicture = async () => {
     try {
+      console.log("update profile pic");
       setLoading(true);
       let img = await getCroppedImage();
       let blob = await fetch(img).then((b) => b.blob());
@@ -184,7 +185,7 @@ export default function UpdateProfilePicture({
         <button
           className="blue_btn"
           disabled={loading}
-          onClick={() => updateProfielPicture()}
+          onClick={() => updateProfilePicture()}
         >
           {loading ? <PulseLoader color="#fff" size={5} /> : "Save"}
         </button>

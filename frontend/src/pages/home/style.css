@@ -209,6 +209,27 @@
 }
 
 @media (max-width: 400px) {
+  .home_middle {
+    width: 100vw !important;
+
+    left: 61%;
+  }
+  .createPost,
+  .post {
+    margin-top: 1rem;
+    width: 100% !important;
+  }
+  .create_post,
+  .post {
+    width: 100% !important;
+    margin: 1rem auto !important;
+  }
+
+  .send_verification {
+    width: 100% !important;
+    margin: 0 auto;
+  }
+
   .createPost_icon {
     font-size: 14px;
   }
@@ -220,6 +241,24 @@
     width: 80%;
     margin-left: 20px;
     margin-right: 30px;
+  }
+
+  .stories,
+  .createPost,
+  .post,
+  .send_verification {
+    width: 100% !important;
+    margin: 0 auto;
+  }
+
+  .createPost,
+  .post {
+    margin-top: 1rem;
+  }
+
+  .stories {
+    grid-template-columns: repeat(6, 13vw);
+    padding-left: 10px;
   }
 }
 

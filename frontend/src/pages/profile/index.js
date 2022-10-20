@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CreatePost from "../../components/createPost";
 import Header from "../../components/header";
+import Intro from "../../components/Intro";
 import Post from "../../components/post";
 import { profileReducer } from "../../functions/reducers";
 import Cover from "./Cover";
@@ -13,6 +14,7 @@ import PeopleYouMayKnow from "./PeopleYouMayKnow";
 import Photos from "./Photos";
 import ProfileMenu from "./ProfileMenu";
 import ProfilePictureInfos from "./ProfilePictureInfos";
+import { useMediaQuery } from "react-responsive";
 import "./style.css";
 
 export default function Profile({ setVisible }) {
@@ -45,9 +47,14 @@ export default function Profile({ setVisible }) {
   }, [userName]);
   //console.log(userName);
   //console.log(user.username);
+
+  useEffect(() => {
+    setOthername(profile?.details?.otherName);
+  }, [profile]);
   var visitor =
     userName.toLowerCase() === user.username.toLowerCase() ? false : true;
   //console.log(visitor);
+  const [othername, setOthername] = useState("");
 
   const path = `${userName}/*`;
   const max = 30;
@@ -72,8 +79,8 @@ export default function Profile({ setVisible }) {
             { path, sort, max },
             { headers: { Authorization: `Bearer ${user.token}` } }
           );
-          console.log("profile images");
-          console.log(images);
+          // console.log("profile images");
+          //console.log(images);
           setPhotos(images.data);
         } catch (error) {
           console.log(error);
@@ -92,12 +99,31 @@ export default function Profile({ setVisible }) {
       });
     }
   };
+  const [scrollHeight, setScrollHeight] = useState();
+  const profileTop = useRef(null);
+  const [height, setHeight] = useState();
+  const leftSide = useRef(null);
+  const [leftHeight, setLeftHeight] = useState();
 
+  useEffect(() => {
+    setHeight(profileTop.current.clientHeight + 300);
+    setLeftHeight(leftSide.current.clientHeight);
+    window.addEventListener("scroll", getScroll, { passive: true });
+    return () => {
+      window.addEventListener("scroll", getScroll, { passive: true });
+    };
+  }, [loading, scrollHeight]);
+  const check901px = useMediaQuery({
+    query: "(min-width:901px)",
+  });
+  const getScroll = () => {
+    setScrollHeight(window.pageYOffset);
+  };
   //console.log(profile);
   return (
     <div className="profile">
       <Header page="profile" />
-      <div className="profile_top">
+      <div className="profile_top" ref={profileTop}>
         <div className="profile_container">
           <Cover
             cover={profile.cover}
@@ -108,16 +134,32 @@ export default function Profile({ setVisible }) {
             profile={profile}
             visitor={visitor}
             photos={photos?.resources}
+            othername={othername}
           />
           <ProfileMenu />
         </div>
-      </div>{" "}
+      </div>
       <div className="profile_bottom">
         <div className="profile_container">
           <div className="bottom_container">
             <PeopleYouMayKnow />
-            <div className="profile_grid">
-              <div className="profile_left">
+            <div
+              className={`profile_grid ${
+                check901px && scrollHeight >= height && leftHeight > 1000
+                  ? "scrollFixed showLess"
+                  : check901px &&
+                    scrollHeight >= height &&
+                    leftHeight < 1000 &&
+                    "scrollFixed showMore"
+              }`}
+            >
+              <div className="profile_left" ref={leftSide}>
+                <Intro
+                  userDetails={profile.details}
+                  visitor={visitor}
+                  othername={othername}
+                  setOthername={setOthername}
+                />
                 <Photos
                   username={userName}
                   token={user.token}

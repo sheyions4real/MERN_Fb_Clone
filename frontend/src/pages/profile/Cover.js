@@ -20,7 +20,7 @@ export default function Cover({ cover, visitor, photos }) {
   const [showCoverMenu, setShowCoverMenu] = useState(false);
   const [coverPicture, setCoverPicture] = useState("");
   const [error, setError] = useState("");
-  const [showOldCover, setShowOldCover] = useState(true);
+  const [showOldCover, setShowOldCover] = useState(false);
 
   const menuRef = useRef(null);
   const cRef = useRef(null);

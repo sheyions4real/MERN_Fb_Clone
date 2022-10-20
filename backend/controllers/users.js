@@ -304,16 +304,50 @@ exports.changePassword = async (req, res) => {
 exports.getProfile = async (req, res) => {
   try {
     const { username } = req.params;
+    const user = await User.findById(req.user.id);
+
     const profile = await User.findOne({ username }).select("-password"); // return all the user details except the password
+
+    // default object for the relationship of username and the loginin user making the request if the user is viewing another persons profile
+    const friendship = {
+      friends: false,
+      following: false,
+      requestSent: false,
+      requestReceived: false,
+    };
+
     if (!profile) {
       return res.json({ ok: false });
+    }
+
+    // check if we are profile is my friend or i am his friend
+    if (
+      user.friends.includes(profile._id) &&
+      profile.friends.includes(user._id)
+    ) {
+      friendship.friends = true;
+    }
+    // check if the profile is in the list of my following
+    if (user.following.includes(profile._id)) {
+      friendship.following = true;
+    }
+    // see if the profile id is in the list of my friends request
+    if (user.requests.includes(profile._id)) {
+      friendship.requestReceived = true;
+    }
+
+    // check if i have sent the profile user a friend request
+    if (profile.requests.includes(user._id)) {
+      friendship.requestSent = true;
     }
 
     // get the post for the user profile returned
     const posts = await Post.find({ user: profile._id })
       .populate("user")
       .sort({ createdAt: -1 });
-    res.json({ ...profile.toObject(), posts });
+
+    await profile.populate("friends", "first_name last_name username picture"); // include the friends user fields as listed
+    res.json({ ...profile.toObject(), posts, friendship });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -345,4 +379,374 @@ exports.updateCoverPicture = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+};
+
+exports.updateDetails = async (req, res) => {
+  try {
+    // console.log("update details");
+    const { info } = req.body;
+    //console.log(info);
+    const updated = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        details: info,
+      },
+      { new: true } // add this paramenter to return the new or updated value to the updated variable
+    );
+    console.log(updated);
+    res.json(updated.details);
+  } catch (error) {}
+};
+
+exports.addFriend = async (req, res) => {
+  try {
+    const user = req.user.id;
+    const friendId = req.params.friendId;
+    if (user !== friendId) {
+      const sender = await User.findById(user);
+      const receiver = await User.findById(friendId);
+      // check if already friend with receiver
+      if (
+        !receiver.requests.includes(sender._id) &&
+        !receiver.friends.includes(sender._id)
+      ) {
+        // not friends and no previews friend request sent
+        // push the sender id into the array
+        await receiver.updateOne({
+          $push: { requests: sender._id },
+        });
+        // add the sender to followers list
+        await receiver.updateOne({
+          $push: { followers: sender._id },
+        });
+
+        // push the receiver id into the sender request array
+        await sender.updateOne({
+          $push: { following: receiver._id },
+        });
+
+        return res
+          .status(200)
+          .json({ message: "Friend Request has been sent" });
+      } else {
+        return res.status(400).json({ message: "Friend Request already sent" });
+      }
+    } else {
+      return res
+        .status(400)
+        .json({ message: "You cant send friend request to yourself" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.cancelFriendRequest = async (req, res) => {
+  try {
+    const user = req.user.id;
+    const friendId = req.params.friendId;
+    if (user !== friendId) {
+      const sender = await User.findById(user);
+      const receiver = await User.findById(friendId);
+      // check if already friend with receiver
+      if (
+        receiver.requests.includes(sender._id) &&
+        !receiver.friends.includes(sender._id)
+      ) {
+        // not friends and no previews friend request sent
+        // push the sender id into the array
+        await receiver.updateOne({
+          $pull: { requests: sender._id },
+        });
+        // add the sender to followers list
+        await receiver.updateOne({
+          $pull: { followers: sender._id },
+        });
+
+        // remove the receiver id from the sender request array
+        await sender.updateOne({
+          $pull: { following: receiver._id },
+        });
+
+        return res
+          .status(200)
+          .json({ message: "Friend Request has been cancelled" });
+      } else {
+        return res
+          .status(400)
+          .json({ message: "Friend Request already canceled" });
+      }
+    } else {
+      return res
+        .status(400)
+        .json({ message: "You cant send friend request to yourself" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.follow = async (req, res) => {
+  try {
+    if (req.user.id !== req.params.friendId) {
+      const sender = await User.findById(req.user.id);
+      const receiver = await User.findById(req.params.friendId);
+      if (
+        !receiver.followers.includes(sender._id) &&
+        !sender.following.includes(receiver._id)
+      ) {
+        await receiver.updateOne({
+          $push: { followers: sender._id },
+        });
+
+        await sender.updateOne({
+          $push: { following: receiver._id },
+        });
+        res.json({ message: "follow success" });
+      } else {
+        return res.status(400).json({ message: "Already following" });
+      }
+    } else {
+      return res.status(400).json({ message: "You can't follow yourself" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+  // try {
+  //   console.log("called");
+  //   const user = req.user.id;
+  //   const friendId = req.params.friendId;
+  //   console.log(friendId);
+  //   console.log(user);
+  //   if (user !== friendId) {
+  //     const sender = await User.findById(user);
+  //     const receiver = await User.findById(friendId);
+  //     // check if already friend with receiver
+  //     if (
+  //       !receiver.followers.includes(sender._id) &&
+  //       !sender.following.includes(receiver._id)
+  //     ) {
+  //       // not friends and no previews following
+  //       // push the sender id into the array of the receiver followers
+  //       await receiver.updateOne({
+  //         $push: { followers: sender._id },
+  //       });
+
+  //       // push the receiver id into the sender request array
+  //       await sender.updateOne({
+  //         $push: { following: receiver._id },
+  //       });
+
+  //       return res.status(200).json({ message: "Following successful" });
+  //     } else {
+  //       return res.status(400).json({ message: "Already following" });
+  //     }
+  //   } else {
+  //     console.log("error");
+  //     return res.status(400).json({ message: "You cant follow yourself" });
+  //   }
+  // } catch (error) {
+  //   console.log(error.message);
+  //   return res.status(500).json({ message: error.message });
+  // }
+};
+
+exports.unFollow = async (req, res) => {
+  try {
+    const user = req.user.id;
+    const friendId = req.params.friendId;
+    if (user !== friendId) {
+      const sender = await User.findById(user);
+      const receiver = await User.findById(friendId);
+      // check if already friend with receiver
+      if (
+        receiver.followers.includes(sender._id) &&
+        sender.following.includes(receiver._id)
+      ) {
+        // not friends and no previews following
+        // push the sender id into the array of the receiver followers
+        await receiver.updateOne({
+          $pull: { followers: sender._id },
+        });
+
+        // push the receiver id into the sender request array
+        await sender.updateOne({
+          $pull: { following: receiver._id },
+        });
+
+        return res.status(200).json({ message: "un following successful" });
+      } else {
+        return res.status(400).json({ message: "Already not following" });
+      }
+    } else {
+      return res.status(400).json({ message: "You cant un follow yourself" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.acceptRequest = async (req, res) => {
+  try {
+    const user = req.user.id;
+    const friendId = req.params.friendId;
+    //console.log(user);
+    // console.log(friendId);
+
+    if (user !== friendId) {
+      const receiver = await User.findById(user);
+      const sender = await User.findById(friendId);
+      // check if sender friend request exist for the receiver to accept the request
+      if (receiver.requests.includes(sender._id)) {
+        // not friends and no previews following
+        // push the sender id into the array of the receiver  friends and followers
+        await receiver.update({
+          $push: { friends: sender._id, following: sender._id },
+        });
+
+        // push the receiver id into the sender request and followers array
+        await sender.update({
+          $push: { friends: receiver._id, followers: receiver._id },
+        });
+
+        // remove the sender from request array
+        await receiver.updateOne({
+          $pull: { requests: sender._id },
+        });
+
+        return res
+          .status(200)
+          .json({ message: "Friend request accepted successful" });
+      } else {
+        return res.status(400).json({ message: "Already friends" });
+      }
+    } else {
+      return res
+        .status(400)
+        .json({ message: "You cant accept a request from yourself" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.unFriend = async (req, res) => {
+  try {
+    const user = req.user.id;
+    const friendId = req.params.friendId;
+    if (user !== friendId) {
+      const sender = await User.findById(user);
+      const receiver = await User.findById(friendId);
+      // check if sender friendship with the receiver  exist
+      if (
+        receiver.friends.includes(sender._id) &&
+        sender.friends.includes(receiver._id)
+      ) {
+        // not friends and no previews following
+        // push the sender id into the array of the receiver  friends and followers
+        await receiver.update({
+          $pull: {
+            friends: sender._id,
+            following: sender._id,
+            followers: sender._id,
+          },
+        });
+
+        // push the receiver id into the sender request and followers array
+        await sender.update({
+          $pull: {
+            friends: receiver._id,
+            following: receiver._id,
+            followers: receiver._id,
+          },
+        });
+
+        return res
+          .status(200)
+          .json({ message: "un Friend request successful" });
+      } else {
+        return res.status(400).json({ message: "Already not friends" });
+      }
+    } else {
+      return res.status(400).json({ message: "You cant unfriend yourself" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.deleteRequest = async (req, res) => {
+  try {
+    if (req.user.id !== req.params.friendId) {
+      const receiver = await User.findById(req.user.id);
+      const sender = await User.findById(req.params.friendId);
+      if (receiver.requests.includes(sender._id)) {
+        await receiver.update({
+          $pull: {
+            requests: sender._id,
+            followers: sender._id,
+          },
+        });
+        await sender.update({
+          $pull: {
+            following: receiver._id,
+          },
+        });
+
+        res.json({ message: "delete request accepted" });
+      } else {
+        return res.status(400).json({ message: "Already deleted" });
+      }
+    } else {
+      return res.status(400).json({ message: "You can't delete yourself" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: error.message });
+  }
+  // try {
+  //   const user = req.user.id;
+  //   const friendId = req.params.friendId;
+
+  //   console.log(user);
+  //   console.log(friendId);
+
+  //   if (user !== friendId) {
+  //     const sender = await User.findById(user);
+  //     const receiver = await User.findById(friendId);
+  //     // check if sender friendship with the receiver  exist
+  //     if (sender.requests.includes(receiver._id)) {
+  //       // not friends and no previews following
+  //       // push the sender id into the array of the receiver  friends and followers
+  //       await sender.update({
+  //         $pull: {
+  //           requests: sender._id,
+  //           followers: sender._id,
+  //         },
+  //       });
+
+  //       // push the receiver id into the sender request and followers array
+  //       await receiver.updateOne({
+  //         $pull: {
+  //           following: receiver._id,
+  //         },
+  //       });
+
+  //       return res
+  //         .status(200)
+  //         .json({ message: "Friend request deleted successful" });
+  //     } else {
+  //       console.log("alreadt");
+  //       return res.status(400).json({ message: "Already Deleted" });
+  //     }
+  //   } else {
+  //     console.log("error.message");
+  //     return res.status(400).json({ message: "You cant delete yourself" });
+  //   }
+  // } catch (error) {
+  //   console.log(error.message);
+  //   return res.status(500).json({ message: error.message });
+  // }
 };
