@@ -10,13 +10,13 @@ import Stories from "../../components/home/stories";
 import Post from "../../components/post";
 import useClickOutside from "../../helpers/clickOutside";
 import "./style.css";
-export default function Home({ setVisible, posts }) {
+export default function Home({ setVisible, posts, loading, getAllPosts }) {
   const { user } = useSelector((state) => ({ ...state }));
   const middle = useRef(null);
   const [height, setHeight] = useState();
   useEffect(() => {
     setHeight(middle.current.clientHeight);
-  }, []);
+  }, [loading, height]);
   //const { user2 } = useSelector((state) => ({ ...state }));
   // el is define create a reference element to any element passed to it using ref={} in this case reference the carc div
   const el = useRef(null);
@@ -26,7 +26,7 @@ export default function Home({ setVisible, posts }) {
 
   return (
     <div className="home" style={{ height: `${height - 150}px` }}>
-      <Header page="home" />
+      <Header page="home" getAllPosts={getAllPosts} />
       <LeftHome user={user} />
       <div className="home_middle" ref={middle}>
         <Stories />

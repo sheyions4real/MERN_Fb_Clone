@@ -21,7 +21,7 @@ import AllMenu from "./AllMenu";
 import UserMenu from "./userMenu";
 import useClickOutside from "../../helpers/clickOutside";
 
-export default function Header({ page }) {
+export default function Header({ page, getAllPosts }) {
   const color = "#65676b";
   const { user } = useSelector((user) => ({ ...user })); // return the user object from the redux store
   //console.log(user);
@@ -71,7 +71,8 @@ export default function Header({ page }) {
       <div className="header_middle">
         <Link
           to="/"
-          className={`middle_icon ${page === "home" ? "active" : "hover1"}  `}
+          className={`middle_icon ${page === "home" ? "active" : "hover1"}`}
+          onClick={() => getAllPosts()}
         >
           {page === "home" ? (
             <HomeActive color={color} />

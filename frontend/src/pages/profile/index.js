@@ -16,8 +16,10 @@ import ProfileMenu from "./ProfileMenu";
 import ProfilePictureInfos from "./ProfilePictureInfos";
 import { useMediaQuery } from "react-responsive";
 import "./style.css";
+import CreatePostPopup from "../../components/createPostPopup";
 
-export default function Profile({ setVisible }) {
+export default function Profile({ getAllPosts }) {
+  const [visible, setVisible] = useState(false);
   const [photos, setPhotos] = useState();
   const navigate = useNavigate();
   // get the parameter passed to the route
@@ -122,7 +124,16 @@ export default function Profile({ setVisible }) {
   //console.log(profile);
   return (
     <div className="profile">
-      <Header page="profile" />
+      {visible && (
+        <CreatePostPopup
+          user={user}
+          setVisible={setVisible}
+          posts={profile?.posts}
+          dispatch={dispatch}
+          profile
+        />
+      )}
+      <Header page="profile" getAllPosts={getAllPosts} />
       <div className="profile_top" ref={profileTop}>
         <div className="profile_container">
           <Cover

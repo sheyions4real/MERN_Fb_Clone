@@ -28,16 +28,16 @@ const postSchema = new mongoose.Schema(
         comment: {
           type: String,
         },
-        images: {
+        image: {
           type: String,
         },
         commentBy: {
           type: ObjectId,
-          ref: "User",
+          ref: "user",
         },
         commentAt: {
           type: Date,
-          default: new Date(),
+          required: true,
         },
       },
     ],

@@ -25,8 +25,8 @@ export default function Friends({ friends }) {
         {friends &&
           friends.length &&
           friends.slice(0, 9).map((friend, index) => (
-            <Link to={`/profile/${friend.username}`}>
-              <div className="profile_photo_card" key={index}>
+            <Link to={`/profile/${friend.username}`} key={index}>
+              <div className="profile_photo_card">
                 <img src={friend.picture} alt="" />
                 <span>
                   {friend.first_name} {friend.last_name}

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { reactPost } from "../../functions/posts";
+import { useSelector } from "react-redux";
 
-export default function ReactsPopup({ visible, setVisible }) {
+export default function ReactsPopup({ visible, setVisible, reactHandler }) {
   const reactsArray = [
     { name: "like", image: "../../../reacts/like.gif" },
     { name: "love", image: "../../../reacts/love.gif" },
@@ -9,6 +11,8 @@ export default function ReactsPopup({ visible, setVisible }) {
     { name: "sad", image: "../../../reacts/sad.gif" },
     { name: "angry", image: "../../../reacts/angry.gif" },
   ];
+
+  // console.log(postId);
   return (
     <>
       {visible && (
@@ -26,7 +30,11 @@ export default function ReactsPopup({ visible, setVisible }) {
           }}
         >
           {reactsArray.map((react, index) => (
-            <div className="react" key={index}>
+            <div
+              className="react"
+              key={index}
+              onClick={() => reactHandler(react.name)}
+            >
               <img src={react.image} alt="" />
             </div>
           ))}

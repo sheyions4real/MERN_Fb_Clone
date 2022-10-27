@@ -302,6 +302,8 @@ exports.changePassword = async (req, res) => {
 };
 
 exports.getProfile = async (req, res) => {
+  // returns the profile details of a user in the request body or params'
+  // returns the post and the post comments
   try {
     const { username } = req.params;
     const user = await User.findById(req.user.id);
@@ -344,6 +346,10 @@ exports.getProfile = async (req, res) => {
     // get the post for the user profile returned
     const posts = await Post.find({ user: profile._id })
       .populate("user")
+      .populate(
+        "comments.commentBy",
+        "first_name last_name username picture commentAt"
+      )
       .sort({ createdAt: -1 });
 
     await profile.populate("friends", "first_name last_name username picture"); // include the friends user fields as listed

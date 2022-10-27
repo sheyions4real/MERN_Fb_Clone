@@ -194,8 +194,13 @@ import { sendPost } from "../../functions/posts";
 import { uploadImages } from "../../functions/UploadImages";
 import PostError from "./postError";
 import { useDispatch } from "react-redux";
-export default function CreatePostPopup({ user, setVisible }) {
-  const dispatch = useDispatch();
+export default function CreatePostPopup({
+  user,
+  setVisible,
+  posts,
+  dispatch,
+  profile,
+}) {
   const popup = useRef(null);
   const [text, setText] = useState("");
   const [showPreview, setShowPreview] = useState(false);
@@ -219,6 +224,13 @@ export default function CreatePostPopup({ user, setVisible }) {
       );
       setLoading(false);
       if (response === "ok") {
+        // if successful update the post redux state with the newly created post added to the old posts
+        // this will refresh on the page immediately the post is created in the db
+        dispatch({
+          type: profile ? "PROFILE_POST" : "POST_SUCCESS",
+          payload: [response.data, ...posts],
+        }); // update the posts redux state object
+        //console.log(response.data);
         setBackground("");
         setText("");
         setVisible(false);
@@ -247,7 +259,14 @@ export default function CreatePostPopup({ user, setVisible }) {
         user.token
       );
       setLoading(false);
-      if (res === "ok") {
+      if (res.status === "ok") {
+        // if successful update the post redux state with the newly created post added to the old posts
+        // this will refresh on the page immediately the post is created in the db
+        dispatch({
+          type: profile ? "PROFILE_POST" : "POST_SUCCESS",
+          payload: [res.data, ...posts],
+        }); // update the posts redux state object
+        // console.log(response.data);
         setText("");
         setImages("");
         setVisible(false);
@@ -265,7 +284,14 @@ export default function CreatePostPopup({ user, setVisible }) {
         user.token
       );
       setLoading(false);
-      if (response === "ok") {
+      if (response.status === "ok") {
+        // if successful update the post redux state with the newly created post added to the old posts
+        // this will refresh on the page immediately the post is created in the db
+        dispatch({
+          type: profile ? "PROFILE_POST" : "POST_SUCCESS",
+          payload: [response.data, ...posts],
+        });
+        //console.log(response.data);
         setBackground("");
         setText("");
         setVisible(false);
