@@ -1,12 +1,11 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
-const { post } = require("../routes/post");
 
 exports.createPost = async (req, res) => {
   try {
     const post = await new Post(req.body).save();
     await post.populate("user", "picture first_name last_name username cover");
-    res.status(200).json(post);
+    res.json(post);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -52,8 +51,8 @@ exports.getAllPosts = async (req, res) => {
     followingPosts.sort((a, b) => {
       return b.createdAt - a.createdAt;
     });
-    console.log(followingPosts);
-    res.status(200).json(followingPosts);
+    // console.log(followingPosts);
+    res.json(followingPosts);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -61,9 +60,9 @@ exports.getAllPosts = async (req, res) => {
 
 exports.comment = async (req, res) => {
   try {
-    console.log("Commant saving");
+    console.log("Command saving");
     const { comment, image, postId } = req.body;
-    console.log(image);
+    //console.log(image);
     let newComments = await Post.findByIdAndUpdate(
       postId,
       {
@@ -80,7 +79,7 @@ exports.comment = async (req, res) => {
         new: true,
       }
     ).populate("comments.commentBy", "picture first_name last_name username");
-    console.log(newComments.comments);
+    // console.log(newComments.comments);
     res.json(newComments.comments);
   } catch (error) {
     console.log(error.message);
@@ -115,7 +114,7 @@ exports.savePost = async (req, res) => {
       });
     }
 
-    res.status(200).json({ status: "ok" });
+    res.json({ status: "ok" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

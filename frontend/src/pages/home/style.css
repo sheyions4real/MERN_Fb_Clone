@@ -11,9 +11,13 @@
   left: 50%;
   transform: translateX(-50%);
   margin-bottom: 40px;
+  width: 45% !important;
 }
 
 @media (max-width: 1175px) {
+  .home_middle {
+    width: 60% !important;
+  }
   .createPost,
   .post,
   .send_verification {
@@ -63,8 +67,10 @@
 
   .home_middle {
     position: relative;
-    margin-left: 55px;
+    margin-left: 60px;
+    width: 83% !important;
   }
+
   .right_home {
     width: 20vw;
   }
@@ -132,7 +138,7 @@
     width: 111%;
   }
   .stories {
-    width: 113%;
+    width: 111%;
   }
 
   .white_circle {
@@ -179,7 +185,7 @@
     width: 100%;
   }
   .stories {
-    width: 90%;
+    width: 100%;
   }
 
   .stories .white_circle {

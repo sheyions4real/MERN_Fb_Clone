@@ -9,10 +9,10 @@ exports.authUser = async (req, res, next) => {
     // console.log(temp);
     const token = temp ? temp.slice(7, temp.length) : ""; // remove the Bearer from then token string
     if (!token) {
-      return res.status(400).json({ message: "Invalid Authentication" });
+      return res.status(400).json({ message: "Invalid Token Authentication" });
     }
 
-    //console.log(token);
+    // console.log(token);
     // verify ad decode the token
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
       if (err) {

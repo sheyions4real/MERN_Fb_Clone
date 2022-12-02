@@ -22,7 +22,7 @@ export default function Stories() {
     : stories.length;
 
   return (
-    <div className="stories">
+    <div className="stories ">
       <div className="create_story_card">
         <img
           src="../../../images/default_pic.png"

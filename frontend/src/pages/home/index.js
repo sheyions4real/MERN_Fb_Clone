@@ -21,7 +21,7 @@ export default function Home({ setVisible, posts, loading, getAllPosts }) {
   // el is define create a reference element to any element passed to it using ref={} in this case reference the carc div
   const el = useRef(null);
   useClickOutside(el, () => {
-    setVisible(false);
+    //setVisible(false);
   });
 
   return (

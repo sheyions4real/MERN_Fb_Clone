@@ -3,16 +3,16 @@ const mongoose = require("mongoose");
 const User = require("../models/User");
 exports.reactPost = async (req, res) => {
   try {
-    console.log("save react post called");
+    // console.log("save react post called");
     const { postId, react } = req.body;
-    console.log(react);
-    console.log(postId);
+    //console.log(react);
+    //console.log(postId);
     // check if the react exist
     const exist = await React.findOne({
       postRef: postId,
       reactBy: mongoose.Types.ObjectId(req.user.id), // cconvert user.id to object type to match the model
     });
-    console.log(" post does not exist");
+    // console.log(" post does not exist");
     // check if the react exist in db if it does remove it and if its not add it. if it exist but the react is different then remove it but if they are different update it
     if (exist == null) {
       const newReact = new React({
@@ -21,7 +21,7 @@ exports.reactPost = async (req, res) => {
         reactBy: req.user.id,
       });
       await newReact.save();
-      console.log("react saved");
+      // console.log("react saved");
       // return res.send(200).json({ message: "new react saved successfully" });
     } else {
       // check if the react in the db is the same with what is passed in the body
@@ -111,14 +111,13 @@ exports.getReacts = async (req, res) => {
       (x) => x.post.toString() === req.params.id
     );
 
-    if (check)
-      res.json({
-        reactsArray,
-        reacts,
-        check: check?.react,
-        total: reactsArray.length,
-        checkSaved: checkSaved ? true : false,
-      });
+    res.json({
+      reactsArray,
+      reacts,
+      check: check?.react,
+      total: reactsArray.length,
+      checkSaved: checkSaved ? true : false,
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: error.message });

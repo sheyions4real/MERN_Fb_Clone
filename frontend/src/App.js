@@ -11,12 +11,13 @@ import { useSelector } from "react-redux";
 import { useEffect, useReducer, useState } from "react";
 import axios from "axios";
 import { postReducer } from "./functions/reducers";
+import Friends from "./pages/friends";
 
 function App() {
   // create a react state
   const [visible, setVisible] = useState(false);
   // get the user from the reduc store
-  const { user } = useSelector((state) => ({ ...state })); // use the LoggedInRoutes to protect other routes
+  const { user, darkTheme } = useSelector((state) => ({ ...state })); // use the LoggedInRoutes to protect other routes
   // create a redux state object using useReducer and use the  dispatch  to update the state
   const [{ loading, error, posts }, dispatch] = useReducer(postReducer, {
     loading: false,
@@ -61,7 +62,7 @@ function App() {
     }
   };
   return (
-    <div>
+    <div className={darkTheme && "dark"}>
       {visible && (
         <CreatePostPopup
           user={user}
@@ -83,6 +84,20 @@ function App() {
             path="/profile/:username"
             element={
               <Profile setVisible={setVisible} getAllPosts={getAllPosts} />
+            }
+            exact
+          />
+          <Route
+            path="/friends"
+            element={
+              <Friends setVisible={setVisible} getAllPosts={getAllPosts} />
+            }
+            exact
+          />
+          <Route
+            path="/friends/:type" // this is to open the friends menu pages using type specified
+            element={
+              <Friends setVisible={setVisible} getAllPosts={getAllPosts} />
             }
             exact
           />

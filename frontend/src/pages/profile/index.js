@@ -18,6 +18,9 @@ import { useMediaQuery } from "react-responsive";
 import "./style.css";
 import CreatePostPopup from "../../components/createPostPopup";
 
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 export default function Profile({ getAllPosts }) {
   const [visible, setVisible] = useState(false);
   const [photos, setPhotos] = useState();
@@ -124,6 +127,7 @@ export default function Profile({ getAllPosts }) {
   //console.log(profile);
   return (
     <div className="profile">
+      {/* <Skeleton height="350px" containerClassName="avatar-skeleton" /> */}
       {visible && (
         <CreatePostPopup
           user={user}

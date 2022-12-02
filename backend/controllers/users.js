@@ -3,19 +3,20 @@ const {
   validateLength,
   validateUsername,
 } = require("../helpers/validation");
-const Post = require("../models/Post");
 const User = require("../models/User");
+const Post = require("../models/Post");
 const Code = require("../models/Code");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const bcrypt = require("bcrypt");
+const cloudinary = require("cloudinary");
 const { generateToken } = require("../helpers/tokens");
 const { sendVerificationEmail, sendResetCode } = require("../helpers/mailer");
 const { generateCode } = require("../helpers/generateCode");
+const mongoose = require("mongoose");
 
 // test the API  Service
 exports.auth = (req, res) => {
-  res.status(200).json({ message: "welcome to auth" });
+  return res.status(200).json({ message: "welcome to auth" });
 };
 
 // user registration repository function
@@ -185,7 +186,7 @@ exports.login = async (req, res) => {
     // generate a token and send back to the user which the user will write to cookie to send for each request to validate the user
     const token = generateToken({ id: user._id.toString() }, "7d");
 
-    res.status(200).send({
+    return res.status(200).send({
       id: user._id,
       username: user.username,
       picture: user.picture,
@@ -755,4 +756,97 @@ exports.deleteRequest = async (req, res) => {
   //   console.log(error.message);
   //   return res.status(500).json({ message: error.message });
   // }
+};
+
+exports.search = async (req, res) => {
+  try {
+    // console.log(req.params.searchTerm);
+    const searchTerm = req.params.searchTerm;
+    const results = await User.find({ $text: { $search: searchTerm } }).select(
+      "first_name last_name username picture"
+    ); // u can use .limit(10)
+    // console.log(results);
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.addToSearchHistory = async (req, res) => {
+  try {
+    const { searchUser } = req.body;
+    const search = {
+      user: searchUser,
+      createdAt: new Date(),
+    };
+    const user = await User.findById(req.user.id);
+    // check if the user has bee saved before
+    const check = user.search.find((x) => x.user.toString() === searchUser);
+    if (check) {
+      // already exist? then update only the date to make more recent
+      await User.updateOne(
+        {
+          _id: req.user.id,
+          "search._id": check._id,
+        },
+        {
+          $set: { "search.$.createdAt": new Date() },
+        }
+      );
+    } else {
+      await User.findByIdAndUpdate(req.user.id, {
+        $push: {
+          search,
+        },
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// search get history
+exports.getSearchHistory = async (req, res) => {
+  try {
+    const results = await User.findById(req.user.id)
+      .select("search")
+      .populate("search.user", "first_name last_name username picture");
+    res.json(results.search);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.removeFromSearch = async (req, res) => {
+  try {
+    const { searchUser } = req.body;
+    await User.updateOne(
+      {
+        _id: req.user.id,
+      },
+      { $pull: { search: { user: searchUser } } }
+    );
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getFriendsPageInfos = async (req, res) => {
+  try {
+    // get all my friends and my friend requests
+    const user = await User.findById(req.user.id)
+      .select("friends requests") // the fields of the user object we need
+      .populate("friends", "first_name last_name picture username")
+      .populate("requests", "first_name last_name picture username");
+
+    const sentRequests = await User.find({
+      requests: mongoose.Types.ObjectId(req.user.id), // convert a string to an object ID
+    }).select("first_name last_name picture username");
+    res.json({
+      friends: user.friends,
+      requests: user.requests,
+      sentRequests,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

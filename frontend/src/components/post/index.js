@@ -11,6 +11,7 @@ import Comment from "./Comment";
 
 export default function Post({ post, user, profile }) {
   const [visible, setVisible] = useState(false);
+
   const [showPostMenu, setShowPostMenu] = useState(false);
   const [reacts, setReacts] = useState();
   const [check, setCheck] = useState();

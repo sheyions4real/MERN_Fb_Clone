@@ -10,6 +10,7 @@ body {
 }
 html {
   overflow-y: scroll;
+  overflow-x: hidden;
   width: 100vw;
 }
 
@@ -34,17 +35,19 @@ a {
   --bg-secondary: #f0f2f5;
   --bg-third: #e4e6eb;
   --bg-forth: #f0f2f5;
+  --bg-sixth: rgb(214, 214, 214);
   --color-primary: #050505;
   --color-secondary: #65676b;
   --divider: #ced0d4;
   --dark-bg-primary: #18191a;
   --dark-bg-secondary: #242526;
   --dark-bg-third: #3a3b3c;
+  --dark-bg-forth: #3a3b3c;
   --dark-color-primary: #242526;
   --dark-color-secondary: #b0b3b8;
   --blue-color: #1876f2;
   --green-color: #42b72a;
-  --light-blue-color: #9ec2f162;
+  --light-blue-color: #cedff1;
   --border-color: #ccced2;
   --shadow-1: rgba(0, 0, 0, 0.2);
   --shadow-2: rgba(0, 0, 0, 0.1);
@@ -159,7 +162,7 @@ a {
   align-items: center;
   justify-content: center;
   margin-right: 11px;
-  background: var(--bg-third);
+  background: var(--bg-sixth);
   cursor: pointer;
 }
 /*---Circles------*/

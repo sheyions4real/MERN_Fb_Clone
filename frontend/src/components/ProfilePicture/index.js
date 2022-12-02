@@ -15,7 +15,7 @@ export default function ProfileUpdate({ setShowProfileUpdate, pRef, photos }) {
   // application state
   const [image, setImage] = useState("");
   const [error, setError] = useState("");
-  console.log(photos);
+  //console.log(photos);
   // helper functions
   useClickOutside(popup, () => {
     //setShowProfileUpdate(false);
